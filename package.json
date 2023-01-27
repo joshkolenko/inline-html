@@ -1,0 +1,27 @@
+{
+  "name": "inline-html",
+  "version": "1.0.0",
+  "description": "Inline HTML is a script that takes a path to an html file and returns an html string with script & link tags inlined.",
+  "main": "dist/index.js",
+  "scripts": {
+    "ts": "tsc"
+  },
+  "keywords": [
+    "inline",
+    "html",
+    "link",
+    "script"
+  ],
+  "author": "joshkolenko",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.1",
+    "@types/jsdom": "^20.0.1",
+    "@types/node": "^18.11.18",
+    "@types/prettier": "^2.7.2",
+    "esbuild": "^0.16.16",
+    "jsdom": "^21.0.0",
+    "prettier": "^2.8.1",
+    "sass": "^1.57.1"
+  }
+}
