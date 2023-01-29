@@ -1,27 +1,34 @@
 {
   "name": "inline-html",
   "version": "1.0.0",
+  "type": "module",
   "description": "Inline HTML is a script that takes a path to an html file and returns an html string with script & link tags inlined.",
-  "main": "dist/index.js",
   "scripts": {
-    "ts": "tsc"
+    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
+    "build:esm": "esbuild src/index.ts --format=esm --outfile=dist/esm/index.js && echo '{ \"type\": \"module\" }' > dist/esm/package.json",
+    "build:cjs": "esbuild src/index.ts --format=cjs --outfile=dist/cjs/index.js && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json",
+    "build:types": "cp -r types dist/types"
   },
   "keywords": [
     "inline",
-    "html",
-    "link",
-    "script"
+    "html"
   ],
   "author": "joshkolenko",
   "license": "ISC",
-  "devDependencies": {
-    "@types/fs-extra": "^11.0.1",
-    "@types/jsdom": "^20.0.1",
-    "@types/node": "^18.11.18",
-    "@types/prettier": "^2.7.2",
+  "dependencies": {
     "esbuild": "^0.16.16",
-    "jsdom": "^21.0.0",
-    "prettier": "^2.8.1",
+    "node-html-parser": "^6.1.4",
     "sass": "^1.57.1"
-  }
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18",
+    "@types/prettier": "^2.7.2"
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    "require": "./dist/cjs/index.js",
+    "import": "./dist/esm/index.js"
+  },
+  "types": "dist/types/index.d.ts"
 }
