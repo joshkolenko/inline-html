@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "noImplicitAny": true,
+    "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "module": "ESNext",
@@ -7,6 +9,6 @@
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
-    "target": "ES2017"
+    "target": "ESNext"
   }
 }
