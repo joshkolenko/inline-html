@@ -1,21 +1,16 @@
-import { JSDOM } from 'jsdom';
-
+import { parse } from 'node-html-parser';
 import path from 'path';
 import esbuild from 'esbuild';
-import fs from 'fs-extra';
+import fs from 'fs';
 import sass from 'sass';
-import prettier from 'prettier';
 
 export const inlineHTML = async (
-  /** Path to HTML file */
   htmlPath: string,
-  /** Attribute used to find style & script tags to inline. Defaults to `inline` */
-  attribute: 'inline' | string = 'inline'
+  attribute: string = 'inline'
 ) => {
   const dir = path.parse(htmlPath).dir;
   const html = fs.readFileSync(htmlPath, 'utf-8');
-  const dom = new JSDOM(html);
-  const document = dom.window.document;
+  const document = parse(html);
 
   const nodes = Array.from(document.querySelectorAll(`[${attribute}]`));
 
@@ -25,10 +20,7 @@ export const inlineHTML = async (
         path.resolve(dir, node.getAttribute('href') || '')
       ).css;
 
-      const el = document.createElement('style');
-      el.innerHTML = output;
-
-      node.replaceWith(el);
+      node.replaceWith(`<style>\n${output}\n</style>`);
     }
 
     if (node.tagName === 'SCRIPT') {
@@ -42,18 +34,9 @@ export const inlineHTML = async (
 
       const output = result.outputFiles[0].text;
 
-      const el = document.createElement('script');
-      el.innerHTML = output;
-
-      node.replaceWith(el);
+      node.replaceWith(`<script>\n${output}</script>`);
     }
   }
 
-  const bundled = document.body.innerHTML;
-  const formatted = prettier.format(bundled, {
-    parser: 'html',
-    printWidth: 500,
-  });
-
-  return formatted;
+  return document.toString();
 };
