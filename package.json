@@ -4,10 +4,9 @@
   "type": "module",
   "description": "Inline HTML is a script that takes a path to an html file and returns an html string with script & link tags inlined.",
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
+    "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "esbuild src/index.ts --format=esm --outfile=dist/esm/index.js && echo '{ \"type\": \"module\" }' > dist/esm/package.json",
-    "build:cjs": "esbuild src/index.ts --format=cjs --outfile=dist/cjs/index.js && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json",
-    "build:types": "cp -r types dist/types"
+    "build:cjs": "esbuild src/index.ts --format=cjs --outfile=dist/cjs/index.js && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json"
   },
   "keywords": [
     "inline",
@@ -29,5 +28,5 @@
     "require": "./dist/cjs/index.js",
     "import": "./dist/esm/index.js"
   },
-  "types": "dist/types/index.d.ts"
+  "types": "./types/index.d.ts"
 }
