@@ -1,12 +1,13 @@
 {
-  "name": "inline-html",
-  "version": "1.0.0",
+  "name": "@joshkolenko/inline-html",
+  "version": "0.1.0",
   "type": "module",
   "description": "Inline HTML is a script that takes a path to an html file and returns an html string with script & link tags inlined.",
   "scripts": {
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "esbuild src/index.ts --format=esm --outfile=dist/esm/index.js && echo '{ \"type\": \"module\" }' > dist/esm/package.json",
-    "build:cjs": "esbuild src/index.ts --format=cjs --outfile=dist/cjs/index.js && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json"
+    "build:cjs": "esbuild src/index.ts --format=cjs --outfile=dist/cjs/index.js && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json",
+    "test": "exit 0"
   },
   "keywords": [
     "inline",
@@ -28,5 +29,8 @@
     "require": "./dist/cjs/index.js",
     "import": "./dist/esm/index.js"
   },
-  "types": "./types/index.d.ts"
+  "types": "./types/index.d.ts",
+  "publishConfig": {
+    "@joshkolenko:registry": "https://npm.pkg.github.com/"
+  }
 }
