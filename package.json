@@ -13,10 +13,7 @@
     "inline",
     "html"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/joshkolenko/inline-html"
-  },
+  "repository": "https://github.com/joshkolenko/inline-html",
   "author": "joshkolenko",
   "license": "ISC",
   "dependencies": {
