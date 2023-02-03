@@ -1,3 +1,5 @@
 src
 tsconfig*
 *.tgz
+.github
+types
