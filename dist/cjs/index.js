@@ -36,32 +36,54 @@ var import_path = __toESM(require("path"), 1);
 var import_esbuild = __toESM(require("esbuild"), 1);
 var import_fs = __toESM(require("fs"), 1);
 var import_sass = __toESM(require("sass"), 1);
-const inlineHTML = async (htmlPath, attribute = "inline") => {
+var import_prettier = __toESM(require("prettier"), 1);
+const inlineHTML = async (htmlPath, options) => {
+  const config = {
+    attribute: "inline",
+    format: {
+      printWidth: 200,
+      tabWidth: 2,
+      semi: true
+    },
+    ...options
+  };
   const dir = import_path.default.parse(htmlPath).dir;
   const html = import_fs.default.readFileSync(htmlPath, "utf-8");
   const document = (0, import_node_html_parser.parse)(html);
-  const nodes = Array.from(document.querySelectorAll(`[${attribute}]`));
+  const nodes = Array.from(document.querySelectorAll(`[${config.attribute}]`));
   for (const node of nodes) {
     if (node.tagName === "LINK") {
-      const output = import_sass.default.compile(
-        import_path.default.resolve(dir, node.getAttribute("href") || "")
-      ).css;
+      const filePath = import_path.default.resolve(dir, node.getAttribute("href") || "");
+      if (!import_fs.default.existsSync(filePath)) {
+        throw new Error(`File not found at: ${filePath}`);
+      }
+      const output = import_sass.default.compile(filePath).css;
       node.replaceWith(`<style>
 ${output}
 </style>`);
     }
     if (node.tagName === "SCRIPT") {
+      const filePath = import_path.default.resolve(dir, node.getAttribute("src") || "");
+      if (!import_fs.default.existsSync(filePath)) {
+        throw new Error(`File not found at: ${filePath}`);
+      }
       const result = await import_esbuild.default.build({
-        entryPoints: [import_path.default.resolve(dir, node.getAttribute("src") || "")],
+        entryPoints: [filePath],
         format: "iife",
         bundle: true,
-        write: false,
-        logLevel: "error"
+        write: false
       });
       const output = result.outputFiles[0].text;
       node.replaceWith(`<script>
 ${output}<\/script>`);
     }
   }
-  return document.toString();
+  if (!config.format) {
+    return document.toString();
+  }
+  const formatted = import_prettier.default.format(document.toString(), {
+    parser: "html",
+    ...config.format
+  });
+  return formatted;
 };

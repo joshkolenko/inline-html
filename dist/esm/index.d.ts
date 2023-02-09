@@ -1,3 +1,5 @@
+import { Config } from 'prettier';
+
 /** ---
  * Takes a path to an HTML file and returns a string
  * with all `script` & `link` tags with attribute `inline`
@@ -17,9 +19,17 @@
  * console.log(html)
  * ```
  *  */
+
 export declare const inlineHTML: (
   /** Path to HTML file */
   path: string,
-  /** Attribute used to find style & script tags to inline. Defaults to `inline` */
-  attribute?: 'inline' | string
+  /** Options object, set custom attribute & format settings */
+  options?: Options
 ) => Promise<string>;
+
+export declare interface Options {
+  /** Attribute inline-html looks for to inline tag. Defaults to `inline` */
+  attribute?: string;
+  /** Uses _Prettier_ to format. Set to `false` for no formatting. Prettier options: https://prettier.io/docs/en/options.html */
+  format?: false | Config;
+}
