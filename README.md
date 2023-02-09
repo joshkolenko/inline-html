@@ -1,12 +1,13 @@
 # inline-html
 
-This module takes a path to an HTML file and returns a promise that resolves with a string of HTML with all `link` and `script` tags with an `inline` attribute replaced with respective inline `style` and `script` elements.
+This module takes a path to an HTML file and returns a promise that resolves with a string of HTML. Output HTML has all `link` and `script` tags with the `inline` attribute replaced with the content of the linked file compiled and inlined in a `style` or `script` tag. Output HTML is formatted using [Prettier](https://github.com/prettier/prettier).
 
 ---
 
 ## Planned features
 
-- Option to minify or format output `html`
+- Option to minify output
+- Option to use html string instead of path
 
 ---
 
@@ -24,38 +25,23 @@ The folder structure looks like this:
 
 ```
 ├── index.js
-└── example
+└── src
     ├── index.html
-    ├── styles
-    │   └── example.scss
-    └── js
-        └── example.js
+    ├── index.ts
+    ├── main.scss
+    └── module.ts
 ```
 
-For this example, this is the code in `index.html`
+For this example, this is the code in `index.html`. (See other example code in `example/`)
 
 ```html
-<div>
-  <h2>Example html</h2>
-</div>
+<body>
+  <h2>Hello, world!</h2>
+</body>
 
-<link rel="stylesheet" href="styles/example.scss" inline />
-<!-- example.scss contents
-  div {
-    h2 {
-      color: blue;
+<link rel="stylesheet" href="main.scss" inline />
 
-      a {
-        color: red;
-      }
-    }
-  }
--->
-
-<script src="js/example.js" inline></script>
-<!-- example.js contents
-  console.log('hello world') 
--->
+<script src="index.ts" inline></script>
 ```
 
 Notice the `inline` attribute on the `link` and `script` tags. This tells `inlineHTML` that you want these tags replaced with the compiled contents of the referenced files.
@@ -75,25 +61,41 @@ import { inlineHTML } from '@joshkolenko/inline-html';
 This is the resulting `html`
 
 ```html
-<div>
-  <h2>Example html</h2>
-</div>
+<body>
+  <h2>Hello, world!</h2>
+</body>
 
 <style>
-  div h2 {
-    color: blue;
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  div h2 a {
-    color: red;
+  body h2 {
+    font-size: 2rem;
   }
 </style>
 
 <script>
-  console.log('hello world');
+  'use strict';
+  (() => {
+    // example/src/module.ts
+    var str = 'Hello, world!';
+
+    // example/src/index.ts
+    console.log(str);
+  })();
 </script>
 ```
 
-You can also provide a second argument to the `inlineHTML` function to change the attribute that the script looks for. Defaults to `inline`.
+You can also provide an `options` object as the second argument.
+
+| Property   | Description                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| attribute? | Attribute inlineHTML will look for to inline tags. Defaults to `inline`                   |
+| format?    | Prettier config object. Default values are `printWidth: 200`, `tabWidth: 2`, `semi: true` |
+
+For more Prettier options, see the [documentation](https://prettier.io/docs/en/options.html).
 
 For example:
 
@@ -101,7 +103,14 @@ For example:
 import { inlineHTML } from '@joshkolenko/inline-html';
 
 (async () => {
-  const html = await inlineHTML('example/index.html', 'bundle');
+  const html = await inlineHTML('example/index.html', {
+    attribute: 'bundle',
+    format: {
+      printWidth: 60,
+      tabWidth: 3,
+      semi: false,
+    },
+  });
 
   // ...
 })();
