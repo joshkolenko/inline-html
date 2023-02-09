@@ -1,0 +1,15 @@
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+$font-size: 2rem;
+
+body {
+  @include flex-center;
+
+  h2 {
+    font-size: $font-size;
+  }
+}
