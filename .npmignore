@@ -3,3 +3,4 @@ tsconfig*
 *.tgz
 .github
 types
+example
