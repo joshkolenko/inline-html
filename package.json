@@ -1,6 +1,6 @@
 {
   "name": "@joshkolenko/inline-html",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "description": "Takes path to html file and inlines script & link tags with `inline` attribute.",
   "scripts": {
