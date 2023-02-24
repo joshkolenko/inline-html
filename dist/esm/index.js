@@ -50,7 +50,6 @@ ${output}<\/script>`);
   if (!config.format) {
     return document.toString();
   }
-  console.log(document.toString());
   const formatted = prettier.format(document.toString(), {
     parser: "html",
     ...config.format

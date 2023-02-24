@@ -83,7 +83,6 @@ ${output}<\/script>`);
   if (!config.format) {
     return document.toString();
   }
-  console.log(document.toString());
   const formatted = import_prettier.default.format(document.toString(), {
     parser: "html",
     ...config.format
