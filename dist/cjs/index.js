@@ -49,7 +49,9 @@ const inlineHTML = async (htmlPath, options) => {
   };
   const dir = import_path.default.parse(htmlPath).dir;
   const html = import_fs.default.readFileSync(htmlPath, "utf-8");
-  const document = (0, import_node_html_parser.parse)(html);
+  const document = (0, import_node_html_parser.parse)(html, {
+    comment: true
+  });
   const nodes = Array.from(document.querySelectorAll(`[${config.attribute}]`));
   for (const node of nodes) {
     if (node.tagName === "LINK") {
@@ -81,6 +83,7 @@ ${output}<\/script>`);
   if (!config.format) {
     return document.toString();
   }
+  console.log(document.toString());
   const formatted = import_prettier.default.format(document.toString(), {
     parser: "html",
     ...config.format

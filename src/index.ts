@@ -21,7 +21,9 @@ export const inlineHTML = async (htmlPath: string, options?: Options) => {
 
   const dir = path.parse(htmlPath).dir;
   const html = fs.readFileSync(htmlPath, 'utf-8');
-  const document = parse(html);
+  const document = parse(html, {
+    comment: true,
+  });
 
   const nodes = Array.from(document.querySelectorAll(`[${config.attribute}]`));
 
@@ -61,6 +63,8 @@ export const inlineHTML = async (htmlPath: string, options?: Options) => {
   if (!config.format) {
     return document.toString();
   }
+
+  console.log(document.toString());
 
   const formatted = prettier.format(document.toString(), {
     parser: 'html',

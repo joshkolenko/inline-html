@@ -16,7 +16,9 @@ const inlineHTML = async (htmlPath, options) => {
   };
   const dir = path.parse(htmlPath).dir;
   const html = fs.readFileSync(htmlPath, "utf-8");
-  const document = parse(html);
+  const document = parse(html, {
+    comment: true
+  });
   const nodes = Array.from(document.querySelectorAll(`[${config.attribute}]`));
   for (const node of nodes) {
     if (node.tagName === "LINK") {
@@ -48,6 +50,7 @@ ${output}<\/script>`);
   if (!config.format) {
     return document.toString();
   }
+  console.log(document.toString());
   const formatted = prettier.format(document.toString(), {
     parser: "html",
     ...config.format
