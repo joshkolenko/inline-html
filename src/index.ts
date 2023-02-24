@@ -64,8 +64,6 @@ export const inlineHTML = async (htmlPath: string, options?: Options) => {
     return document.toString();
   }
 
-  console.log(document.toString());
-
   const formatted = prettier.format(document.toString(), {
     parser: 'html',
     ...config.format,
