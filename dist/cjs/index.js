@@ -59,7 +59,9 @@ const inlineHTML = async (htmlPath, options) => {
       if (!import_fs.default.existsSync(filePath)) {
         throw new Error(`File not found at: ${filePath}`);
       }
-      const output = import_sass.default.compile(filePath).css;
+      const output = import_sass.default.compile(filePath, {
+        charset: false
+      }).css;
       node.replaceWith(`<style>
 ${output}
 </style>`);

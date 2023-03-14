@@ -35,7 +35,9 @@ export const inlineHTML = async (htmlPath: string, options?: Options) => {
         throw new Error(`File not found at: ${filePath}`);
       }
 
-      const output = sass.compile(filePath).css;
+      const output = sass.compile(filePath, {
+        charset: false,
+      }).css;
 
       node.replaceWith(`<style>\n${output}\n</style>`);
     }

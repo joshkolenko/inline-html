@@ -26,7 +26,9 @@ const inlineHTML = async (htmlPath, options) => {
       if (!fs.existsSync(filePath)) {
         throw new Error(`File not found at: ${filePath}`);
       }
-      const output = sass.compile(filePath).css;
+      const output = sass.compile(filePath, {
+        charset: false
+      }).css;
       node.replaceWith(`<style>
 ${output}
 </style>`);
