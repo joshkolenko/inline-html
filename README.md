@@ -6,7 +6,7 @@ This module takes a path to an HTML file and returns a promise that resolves wit
 
 ## Planned features
 
-- Option to minify outp
+- Option to minify output
 
 ---
 
