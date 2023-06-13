@@ -4,7 +4,7 @@ import esbuild from "esbuild";
 import fs from "fs";
 import sass from "sass";
 import prettier from "prettier";
-const inlineHTML = async (htmlPath, options) => {
+const inlineHTML = async (source, options) => {
   const config = {
     attribute: "inline",
     format: {
@@ -14,8 +14,14 @@ const inlineHTML = async (htmlPath, options) => {
     },
     ...options
   };
-  const dir = path.parse(htmlPath).dir;
-  const html = fs.readFileSync(htmlPath, "utf-8");
+  let html, dir;
+  if (fs.existsSync(source) && fs.lstatSync(source).isDirectory()) {
+    html = fs.readFileSync(source, "utf-8");
+    dir = path.parse(source).dir;
+  } else {
+    html = source;
+    dir = options?.dir || process.cwd();
+  }
   const document = parse(html, {
     comment: true
   });

@@ -37,7 +37,7 @@ var import_esbuild = __toESM(require("esbuild"), 1);
 var import_fs = __toESM(require("fs"), 1);
 var import_sass = __toESM(require("sass"), 1);
 var import_prettier = __toESM(require("prettier"), 1);
-const inlineHTML = async (htmlPath, options) => {
+const inlineHTML = async (source, options) => {
   const config = {
     attribute: "inline",
     format: {
@@ -47,8 +47,14 @@ const inlineHTML = async (htmlPath, options) => {
     },
     ...options
   };
-  const dir = import_path.default.parse(htmlPath).dir;
-  const html = import_fs.default.readFileSync(htmlPath, "utf-8");
+  let html, dir;
+  if (import_fs.default.existsSync(source) && import_fs.default.lstatSync(source).isDirectory()) {
+    html = import_fs.default.readFileSync(source, "utf-8");
+    dir = import_path.default.parse(source).dir;
+  } else {
+    html = source;
+    dir = options?.dir || process.cwd();
+  }
   const document = (0, import_node_html_parser.parse)(html, {
     comment: true
   });

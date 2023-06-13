@@ -6,8 +6,7 @@ This module takes a path to an HTML file and returns a promise that resolves wit
 
 ## Planned features
 
-- Option to minify output
-- Option to use html string instead of path
+- Option to minify outp
 
 ---
 
@@ -93,6 +92,7 @@ You can also provide an `options` object as the second argument.
 | Property   | Description                                                                               |
 | ---------- | ----------------------------------------------------------------------------------------- |
 | attribute? | Attribute inlineHTML will look for to inline tags. Defaults to `inline`                   |
+| dir?       | Attribute inlineHTML will look for to inline tags. Defaults to `inline`                   |
 | format?    | Prettier config object. Default values are `printWidth: 200`, `tabWidth: 2`, `semi: true` |
 
 For more Prettier options, see the [documentation](https://prettier.io/docs/en/options.html).
@@ -110,6 +110,21 @@ import { inlineHTML } from '@joshkolenko/inline-html';
       tabWidth: 3,
       semi: false,
     },
+  });
+
+  // ...
+})();
+```
+
+As of `V0.3.0`, you can now pass an html string as the first parameter to `inlineHTML`. The paths in the `html` string will be resolved relative to the current working directory, or you can pass a `dir` option to the `Options` object to resolve the paths relative to the specified path.
+
+```js
+(async () => {
+  const htmlPath = path.resolve('example/src/index.html');
+  const htmlStr = await fs.readFile(htmlPath, 'utf8');
+
+  const html = await inlineHTML(htmlStr, {
+    dir: 'example',
   });
 
   // ...

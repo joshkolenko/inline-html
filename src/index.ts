@@ -8,7 +8,7 @@ import fs from 'fs';
 import sass from 'sass';
 import prettier from 'prettier';
 
-export const inlineHTML = async (htmlPath: string, options?: Options) => {
+export const inlineHTML = async (source: string, options?: Options) => {
   const config = {
     attribute: 'inline',
     format: {
@@ -19,8 +19,16 @@ export const inlineHTML = async (htmlPath: string, options?: Options) => {
     ...options,
   };
 
-  const dir = path.parse(htmlPath).dir;
-  const html = fs.readFileSync(htmlPath, 'utf-8');
+  let html: string, dir: string;
+
+  if (fs.existsSync(source) && fs.lstatSync(source).isFile()) {
+    html = fs.readFileSync(source, 'utf-8');
+    dir = path.parse(source).dir;
+  } else {
+    html = source;
+    dir = options?.dir || process.cwd();
+  }
+
   const document = parse(html, {
     comment: true,
   });
