@@ -48,7 +48,7 @@ const inlineHTML = async (source, options) => {
     ...options
   };
   let html, dir;
-  if (import_fs.default.existsSync(source) && import_fs.default.lstatSync(source).isDirectory()) {
+  if (import_fs.default.existsSync(source) && import_fs.default.lstatSync(source).isFile()) {
     html = import_fs.default.readFileSync(source, "utf-8");
     dir = import_path.default.parse(source).dir;
   } else {

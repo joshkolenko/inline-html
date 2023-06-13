@@ -15,7 +15,7 @@ const inlineHTML = async (source, options) => {
     ...options
   };
   let html, dir;
-  if (fs.existsSync(source) && fs.lstatSync(source).isDirectory()) {
+  if (fs.existsSync(source) && fs.lstatSync(source).isFile()) {
     html = fs.readFileSync(source, "utf-8");
     dir = path.parse(source).dir;
   } else {
