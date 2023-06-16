@@ -35,7 +35,7 @@ var import_node_html_parser = require("node-html-parser");
 var import_path = __toESM(require("path"), 1);
 var import_esbuild = __toESM(require("esbuild"), 1);
 var import_fs = __toESM(require("fs"), 1);
-var import_sass = __toESM(require("sass"), 1);
+var sass = __toESM(require("sass"), 1);
 var import_prettier = __toESM(require("prettier"), 1);
 const inlineHTML = async (source, options) => {
   const config = {
@@ -65,7 +65,7 @@ const inlineHTML = async (source, options) => {
       if (!import_fs.default.existsSync(filePath)) {
         throw new Error(`File not found at: ${filePath}`);
       }
-      const output = import_sass.default.compile(filePath, {
+      const output = sass.compile(filePath, {
         charset: false
       }).css;
       node.replaceWith(`<style>

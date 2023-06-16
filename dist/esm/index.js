@@ -2,7 +2,7 @@ import { parse } from "node-html-parser";
 import path from "path";
 import esbuild from "esbuild";
 import fs from "fs";
-import sass from "sass";
+import * as sass from "sass";
 import prettier from "prettier";
 const inlineHTML = async (source, options) => {
   const config = {
