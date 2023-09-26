@@ -1,5 +1,3 @@
-import type { Options } from '../types/index.js';
-
 import { parse } from 'node-html-parser';
 
 import path from 'path';
@@ -8,8 +6,44 @@ import fs from 'fs';
 import * as sass from 'sass';
 import prettier from 'prettier';
 
-export const inlineHTML = async (source: string, options?: Options) => {
-  const config = {
+import type { Config } from 'prettier';
+
+interface Options {
+  /** Attribute inline-html looks for to inline tag. Defaults to `inline` */
+  attribute?: string;
+  /** Directory where paths in html will resolved relative to. Defaults to `process.cwd()` */
+  dir?: string;
+  /** Uses _Prettier_ to format. Set to `false` for no formatting. Prettier options: https://prettier.io/docs/en/options.html */
+  format?: false | Config;
+  /** Paths on the filesystem that Sass will look in when resolving imports */
+  loadPaths?: string[] | [];
+}
+
+/**
+ * Takes a path to an HTML file and returns a string
+ * with all `script` & `link` tags with attribute `inline`
+ * (or user-defined attribute) replaced with compiled
+ * versions of the tags' contents. Tags with `inline`
+ * (or user-defined attribute) must link
+ * to an external file.
+ *
+ * Supports `sass` & `ts`
+ *
+ * @example
+ *
+ * ```js
+ * import inlineHTML from 'inline-html'
+ *
+ * const html = await inlineHTML('path/to/file')
+ * console.log(html)
+ * ```
+ *
+ * @param p Path to HTML file
+ * @param options Options object, set custom attribute, sass `loadPaths` & format settings
+ * @returns
+ */
+export const inlineHTML = async (p: string, options?: Options) => {
+  const config: Options = {
     attribute: 'inline',
     format: {
       printWidth: 200,
@@ -21,11 +55,11 @@ export const inlineHTML = async (source: string, options?: Options) => {
 
   let html: string, dir: string;
 
-  if (fs.existsSync(source) && fs.lstatSync(source).isFile()) {
-    html = fs.readFileSync(source, 'utf-8');
-    dir = path.parse(source).dir;
+  if (fs.existsSync(p) && fs.lstatSync(p).isFile()) {
+    html = fs.readFileSync(p, 'utf-8');
+    dir = path.parse(p).dir;
   } else {
-    html = source;
+    html = p;
     dir = options?.dir || process.cwd();
   }
 
