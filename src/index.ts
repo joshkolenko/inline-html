@@ -45,6 +45,7 @@ interface Options {
 export const inlineHTML = async (p: string, options?: Options) => {
   const config: Options = {
     attribute: 'inline',
+    loadPaths: [],
     format: {
       printWidth: 200,
       tabWidth: 2,
@@ -79,6 +80,7 @@ export const inlineHTML = async (p: string, options?: Options) => {
 
       const output = sass.compile(filePath, {
         charset: false,
+        loadPaths: config.loadPaths,
       }).css;
 
       node.replaceWith(`<style>\n${output}\n</style>`);
