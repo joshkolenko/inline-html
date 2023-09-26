@@ -1,12 +1,8 @@
 # inline-html
 
+**As of `V0.4.1` this module is now `ESM` only. Use previous versions for `CJS` support.**
+
 This module takes a path to an HTML file and returns a promise that resolves with a string of HTML. Output HTML has all `link` and `script` tags with the `inline` attribute replaced with the content of the linked file compiled and inlined in a `style` or `script` tag. Output HTML is formatted using [Prettier](https://github.com/prettier/prettier).
-
----
-
-## Planned features
-
-- Option to minify output
 
 ---
 
@@ -92,8 +88,9 @@ You can also provide an `options` object as the second argument.
 | Property   | Description                                                                               |
 | ---------- | ----------------------------------------------------------------------------------------- |
 | attribute? | Attribute inlineHTML will look for to inline tags. Defaults to `inline`                   |
-| dir?       | Attribute inlineHTML will look for to inline tags. Defaults to `inline`                   |
+| dir?       | Directory where paths in html string be will resolved from. Defaults to `process.cwd()`   |
 | format?    | Prettier config object. Default values are `printWidth: 200`, `tabWidth: 2`, `semi: true` |
+| loadPaths? | Paths on the filesystem that Sass will look in when resolving imports                     |
 
 For more Prettier options, see the [documentation](https://prettier.io/docs/en/options.html).
 
