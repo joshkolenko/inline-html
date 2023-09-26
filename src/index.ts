@@ -11,7 +11,7 @@ import type { Config } from 'prettier';
 interface Options {
   /** Attribute inline-html looks for to inline tag. Defaults to `inline` */
   attribute?: string;
-  /** Directory where paths in html will resolved relative to. Defaults to `process.cwd()` */
+  /** Directory where paths in html string be will resolved from. Defaults to `process.cwd()` */
   dir?: string;
   /** Uses _Prettier_ to format. Set to `false` for no formatting. Prettier options: https://prettier.io/docs/en/options.html */
   format?: false | Config;
