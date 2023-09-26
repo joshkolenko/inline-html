@@ -1,37 +1,30 @@
 {
   "name": "@joshkolenko/inline-html",
-  "version": "0.3.2",
-  "type": "module",
-  "description": "Module that takes a path to an html file or an html string and replaces `script` and `link` elements that have the `inline` attribute with the corresponding file contents.",
-  "scripts": {
-    "build": "npm run build:esm && npm run build:cjs && npm run build:types",
-    "build:esm": "esbuild src/index.ts --format=esm --outfile=dist/esm/index.js && echo '{ \"type\": \"module\" }' > dist/esm/package.json",
-    "build:cjs": "esbuild src/index.ts --format=cjs --outfile=dist/cjs/index.js && echo '{ \"type\": \"commonjs\" }' > dist/cjs/package.json",
-    "build:types": "cp types/index.d.ts dist/cjs && cp types/index.d.ts dist/esm",
-    "example": "ts-node-esm example/index.ts",
-    "test": "exit 0"
-  },
   "keywords": [
     "inline",
     "html"
   ],
+  "version": "0.4.1",
+  "type": "module",
+  "description": "Function that takes a path to an html file or an html string and replaces `script` and `link` elements that have the `inline` attribute with the corresponding file contents.",
   "repository": "https://github.com/joshkolenko/inline-html",
   "author": "joshkolenko",
   "license": "ISC",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "rm -rf dist & tsc",
+    "pack": "npm run build && npm pack",
+    "example": "ts-node --esm example/index.ts"
+  },
   "dependencies": {
     "esbuild": "^0.16.16",
     "node-html-parser": "^6.1.4",
     "prettier": "^2.8.4",
-    "sass": "^1.63.4"
+    "sass": "^1.63.4",
+    "typescript": "^5.2.2"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
     "@types/prettier": "^2.7.2"
-  },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "exports": {
-    "require": "./dist/cjs/index.js",
-    "import": "./dist/esm/index.js"
   }
 }

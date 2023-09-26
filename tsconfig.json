@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "noImplicitAny": true,
-    "removeComments": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
+    "target": "ES2015",
+    "esModuleInterop": true,
     "outDir": "dist",
-    "strict": true,
-    "target": "ESNext"
-  }
+    "declaration": true
+  },
+  "include": ["src/**/*"]
 }
