@@ -12,9 +12,10 @@
   "license": "ISC",
   "main": "./dist/index.js",
   "scripts": {
+    "prepublish": "npm run build",
     "build": "rm -rf dist & tsc",
-    "dev": "tsx watch example/index.ts",
     "example": "tsx example/index.ts",
+    "dev": "tsx watch example/index.ts",
     "test": "vitest"
   },
   "dependencies": {
