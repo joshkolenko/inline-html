@@ -7,7 +7,10 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Function that takes a path to an html file or an html string and replaces `script` and `link` elements that have the `inline` attribute with the corresponding file contents.",
-  "repository": "https://github.com/joshkolenko/inline-html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshkolenko/inline-html.git"
+  },
   "author": "joshkolenko",
   "license": "ISC",
   "main": "./dist/index.js",
