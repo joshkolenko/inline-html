@@ -1,0 +1,20 @@
+@use 'load-path-test';
+@use 'partial';
+
+body {
+  margin: 0;
+
+  h1 {
+    color: red;
+  }
+
+  p {
+    color: blue;
+  }
+}
+
+.load-path-test {
+  @include load-path-test.testMixin {
+    color: load-path-test.testFunction(load-path-test.$testVar);
+  }
+}

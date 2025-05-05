@@ -1,0 +1,9 @@
+$testVar: red;
+
+@mixin testMixin {
+  @content;
+}
+
+@function testFunction($arg) {
+  @return $arg;
+}
