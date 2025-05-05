@@ -14,7 +14,6 @@ const fileContents = fs.readFileSync(filePath, 'utf-8');
 
 describe('inline', () => {
   test('file', async () => {
-    const filePath = path.resolve('test/fixtures/html/index.html');
     const html = await inlineHTML(filePath, fileOptions);
     expect(html).toMatchSnapshot();
   });

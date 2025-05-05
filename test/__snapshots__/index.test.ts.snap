@@ -88,7 +88,92 @@ exports[`compile & inline > ts 1`] = `
 </script>"
 `;
 
-exports[`inline > file 1`] = `"/Users/kolenkjo/Development/GitHub/inline-html/test/fixtures/html/index.html"`;
+exports[`inline > file 1`] = `
+"<!-- css -->
+<style>
+body {
+  margin: 0;
+}
+
+body div {
+  -ms-flex-align: center;
+  align-items: center;
+  justify-items: center;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+h1 {
+  color: red;
+}
+
+p {
+  color: #00f;
+}
+</style>
+
+<!-- scss -->
+<style>
+.partial {
+  color: green;
+}
+
+.partial div {
+  -ms-flex-align: center;
+  align-items: center;
+  justify-items: center;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+body {
+  margin: 0;
+}
+
+body h1 {
+  color: red;
+}
+
+body p {
+  color: #00f;
+}
+
+.load-path-test {
+  color: red;
+}
+</style>
+
+<!-- js -->
+<script>
+(() => {
+  // test/fixtures/js/module.js
+  var message = "Hello, world!";
+  var module = () => {
+    return message;
+  };
+
+  // test/fixtures/js/index.js
+  var result = module(message);
+  console.log(result);
+})();
+</script>
+
+<!-- ts -->
+<script>
+(() => {
+  // test/fixtures/ts/module.ts
+  var message = "Hello, world!";
+  var module = () => {
+    return message;
+  };
+
+  // test/fixtures/ts/index.ts
+  var result = module(message);
+  console.log(result);
+})();
+</script>
+"
+`;
 
 exports[`inline > string 1`] = `
 "<!-- css -->
