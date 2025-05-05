@@ -3,23 +3,26 @@
 </body>
 
 <style>
-  body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  body h2 {
-    font-size: 2rem;
-    color: blue;
-  }
+body {
+  -ms-flex-align: center;
+  align-items: center;
+  justify-items: center;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+body h2 {
+  color: #00f;
+  font-size: 2rem;
+}
 </style>
 
 <script>
-  (() => {
-    // example/src/module.ts
-    var str = "Hello, world!";
+(() => {
+  // example/src/module.ts
+  var str = "Hello, world!";
 
-    // example/src/index.ts
-    console.log(str);
-  })();
+  // example/src/index.ts
+  console.log(str);
+})();
 </script>

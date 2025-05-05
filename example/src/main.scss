@@ -1,9 +1,8 @@
-@import 'mixins';
+@use 'mixins' as *;
 
 @mixin flex-center {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  place-items: center;
 }
 
 $font-size: 2rem;

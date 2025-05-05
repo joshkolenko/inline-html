@@ -1,32 +1,32 @@
 import fs from 'fs';
 import path from 'path';
 
-import { inlineHTML } from '../dist/index.js';
+import { inlineHTML } from '../src';
 
-(async () => {
-  try {
-    const htmlPath = path.resolve('example/src/index.html');
-    const htmlStr = fs.readFileSync(path.resolve('example/src/index.html'), 'utf8');
+try {
+  const htmlPath = path.resolve('example/src/index.html');
+  const htmlStr = fs.readFileSync(htmlPath, 'utf8');
 
-    const loadPaths = ['example/sass/load/path'];
+  const loadPaths = ['example/sass/load/path'];
 
-    const html = {
-      path: await inlineHTML(htmlPath, { loadPaths }),
-      str: await inlineHTML(htmlStr, { dir: 'example/src', loadPaths }),
-    };
+  const html = {
+    path: await inlineHTML(htmlPath, { loadPaths }),
+    str: await inlineHTML(htmlStr, { dir: 'example/src', loadPaths }),
+  };
 
-    const distPath = path.resolve('example/dist');
+  console.log(html.path);
 
-    if (!fs.existsSync(distPath)) {
-      fs.mkdirSync(distPath);
-    } else {
-      fs.rmSync(distPath, { recursive: true });
-      fs.mkdirSync(distPath);
-    }
+  const distPath = path.resolve('example/dist');
 
-    fs.writeFileSync(path.join(distPath, 'path.html'), html.path);
-    fs.writeFileSync(path.join(distPath, 'str.html'), html.str);
-  } catch (error) {
-    console.log(error);
+  if (!fs.existsSync(distPath)) {
+    fs.mkdirSync(distPath);
+  } else {
+    fs.rmSync(distPath, { recursive: true });
+    fs.mkdirSync(distPath);
   }
-})();
+
+  fs.writeFileSync(path.join(distPath, 'path.html'), html.path);
+  // fs.writeFileSync(path.join(distPath, 'str.html'), html.str);
+} catch (error) {
+  console.log(error);
+}
