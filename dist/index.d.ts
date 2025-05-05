@@ -1,21 +1,27 @@
-import type { Config } from 'prettier';
-interface Options {
+export interface Options {
     /** Attribute inline-html looks for to inline tag. Defaults to `inline` */
     attribute?: string;
-    /** Directory where paths in html will resolved relative to. Defaults to `process.cwd()` */
+    /** Transform CSS files with LightningCSS */
+    transformCss?: boolean;
+    /** Browser support target. Defaults to  */
+    cssTarget?: string | string[];
+    /** Directory where paths in html string be will resolved from. Defaults to `process.cwd()` */
     dir?: string;
-    /** Uses _Prettier_ to format. Set to `false` for no formatting. Prettier options: https://prettier.io/docs/en/options.html */
-    format?: false | Config;
     /** Paths on the filesystem that Sass will look in when resolving imports */
     loadPaths?: string[] | [];
+    minifyCss?: boolean;
+    minifyJs?: boolean | {
+        identifiers?: boolean;
+        syntax?: boolean;
+        whitespace?: boolean;
+    };
 }
 /**
- * Takes a path to an HTML file and returns a string
- * with all `script` & `link` tags with attribute `inline`
- * (or user-defined attribute) replaced with compiled
- * versions of the tags' contents. Tags with `inline`
- * (or user-defined attribute) must link
- * to an external file.
+ * Takes either a path to an HTML file or an html string and
+ * returns a string with all `script` & `link` tags with
+ * attribute `inline` (or user-defined attribute) replaced with
+ * compiled versions of the tags' contents. Tags with `inline`
+ * (or user-defined attribute) must link to an external file.
  *
  * Supports `sass` & `ts`
  *
@@ -28,9 +34,8 @@ interface Options {
  * console.log(html)
  * ```
  *
- * @param p Path to HTML file
+ * @param source Path to HTML file or HTML string
  * @param options Options object, set custom attribute, sass `loadPaths` & format settings
  * @returns
  */
-export declare const inlineHTML: (p: string, options?: Options) => Promise<string>;
-export {};
+export declare const inlineHTML: (source: string, options?: Options) => Promise<string>;

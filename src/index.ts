@@ -1,31 +1,40 @@
 import { parse } from 'node-html-parser';
 
+import browserslist from 'browserslist';
 import path from 'path';
 import esbuild from 'esbuild';
 import fs from 'fs';
-import * as sass from 'sass';
-import prettier from 'prettier';
 
-import type { Config } from 'prettier';
+import { transform as lightningcss, browserslistToTargets } from 'lightningcss';
+import { compile as sass } from 'sass';
 
-interface Options {
+export interface Options {
   /** Attribute inline-html looks for to inline tag. Defaults to `inline` */
   attribute?: string;
+  /** Transform CSS files with LightningCSS */
+  transformCss?: boolean;
+  /** Browser support target. Defaults to  */
+  cssTarget?: string | string[];
   /** Directory where paths in html string be will resolved from. Defaults to `process.cwd()` */
   dir?: string;
-  /** Uses _Prettier_ to format. Set to `false` for no formatting. Prettier options: https://prettier.io/docs/en/options.html */
-  format?: false | Config;
   /** Paths on the filesystem that Sass will look in when resolving imports */
   loadPaths?: string[] | [];
+  minifyCss?: boolean;
+  minifyJs?:
+    | boolean
+    | {
+        identifiers?: boolean;
+        syntax?: boolean;
+        whitespace?: boolean;
+      };
 }
 
 /**
- * Takes a path to an HTML file and returns a string
- * with all `script` & `link` tags with attribute `inline`
- * (or user-defined attribute) replaced with compiled
- * versions of the tags' contents. Tags with `inline`
- * (or user-defined attribute) must link
- * to an external file.
+ * Takes either a path to an HTML file or an html string and
+ * returns a string with all `script` & `link` tags with
+ * attribute `inline` (or user-defined attribute) replaced with
+ * compiled versions of the tags' contents. Tags with `inline`
+ * (or user-defined attribute) must link to an external file.
  *
  * Supports `sass` & `ts`
  *
@@ -38,29 +47,24 @@ interface Options {
  * console.log(html)
  * ```
  *
- * @param p Path to HTML file
+ * @param source Path to HTML file or HTML string
  * @param options Options object, set custom attribute, sass `loadPaths` & format settings
  * @returns
  */
-export const inlineHTML = async (p: string, options?: Options) => {
+export const inlineHTML = async (source: string, options?: Options) => {
   const config: Options = {
     attribute: 'inline',
-    loadPaths: [],
-    format: {
-      printWidth: 200,
-      tabWidth: 2,
-      semi: true,
-    },
+    transformCss: true,
     ...options,
   };
 
   let html: string, dir: string;
 
-  if (fs.existsSync(p) && fs.lstatSync(p).isFile()) {
-    html = fs.readFileSync(p, 'utf-8');
-    dir = path.parse(p).dir;
+  if (fs.existsSync(source) && fs.lstatSync(source).isFile()) {
+    html = fs.readFileSync(source, 'utf-8');
+    dir = path.parse(source).dir;
   } else {
-    html = p;
+    html = source;
     dir = options?.dir || process.cwd();
   }
 
@@ -78,12 +82,30 @@ export const inlineHTML = async (p: string, options?: Options) => {
         throw new Error(`File not found at: ${filePath}`);
       }
 
-      const output = sass.compile(filePath, {
-        charset: false,
-        loadPaths: config.loadPaths,
-      }).css;
+      let source = fs.readFileSync(filePath, 'utf-8');
+      let output: string;
 
-      node.replaceWith(`<style>\n${output}\n</style>`);
+      if (path.extname(filePath) === '.sass' || path.extname(filePath) === '.scss') {
+        source = sass(filePath, {
+          charset: false,
+          loadPaths: config.loadPaths || [],
+        }).css;
+      }
+
+      if (config.transformCss) {
+        const { code } = lightningcss({
+          filename: filePath,
+          code: Buffer.from(source),
+          minify: config.minifyCss,
+          targets: browserslistToTargets(browserslist(config.cssTarget || 'last 2 versions')),
+        });
+
+        output = code.toString();
+      } else {
+        output = source;
+      }
+
+      node.replaceWith(`<style>\n${output.trim()}\n</style>`);
     }
 
     if (node.tagName === 'SCRIPT') {
@@ -93,27 +115,29 @@ export const inlineHTML = async (p: string, options?: Options) => {
         throw new Error(`File not found at: ${filePath}`);
       }
 
-      const result = await esbuild.build({
+      const buildOptions: esbuild.BuildOptions = {
         entryPoints: [filePath],
         format: 'iife',
         bundle: true,
         write: false,
-      });
+      };
 
+      if (config.minifyJs === true) {
+        buildOptions.minify = true;
+      } else if (typeof config.minifyJs === 'object') {
+        const { identifiers, syntax, whitespace } = config.minifyJs;
+
+        buildOptions.minifyIdentifiers = identifiers;
+        buildOptions.minifySyntax = syntax;
+        buildOptions.minifyWhitespace = whitespace;
+      }
+
+      const result = await esbuild.build(buildOptions);
       const output = result.outputFiles[0].text;
 
       node.replaceWith(`<script>\n${output}</script>`);
     }
   }
 
-  if (!config.format) {
-    return document.toString();
-  }
-
-  const formatted = prettier.format(document.toString(), {
-    parser: 'html',
-    ...config.format,
-  });
-
-  return formatted;
+  return document.toString();
 };

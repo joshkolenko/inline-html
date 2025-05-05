@@ -8,18 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { parse } from 'node-html-parser';
+import browserslist from 'browserslist';
 import path from 'path';
 import esbuild from 'esbuild';
 import fs from 'fs';
-import * as sass from 'sass';
-import prettier from 'prettier';
+import { transform as lightningcss, browserslistToTargets } from 'lightningcss';
+import { compile as sass } from 'sass';
 /**
- * Takes a path to an HTML file and returns a string
- * with all `script` & `link` tags with attribute `inline`
- * (or user-defined attribute) replaced with compiled
- * versions of the tags' contents. Tags with `inline`
- * (or user-defined attribute) must link
- * to an external file.
+ * Takes either a path to an HTML file or an html string and
+ * returns a string with all `script` & `link` tags with
+ * attribute `inline` (or user-defined attribute) replaced with
+ * compiled versions of the tags' contents. Tags with `inline`
+ * (or user-defined attribute) must link to an external file.
  *
  * Supports `sass` & `ts`
  *
@@ -32,23 +32,19 @@ import prettier from 'prettier';
  * console.log(html)
  * ```
  *
- * @param p Path to HTML file
+ * @param source Path to HTML file or HTML string
  * @param options Options object, set custom attribute, sass `loadPaths` & format settings
  * @returns
  */
-export const inlineHTML = (p, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const config = Object.assign({ attribute: 'inline', loadPaths: [], format: {
-            printWidth: 200,
-            tabWidth: 2,
-            semi: true,
-        } }, options);
+export const inlineHTML = (source, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const config = Object.assign({ attribute: 'inline', transformCss: true }, options);
     let html, dir;
-    if (fs.existsSync(p) && fs.lstatSync(p).isFile()) {
-        html = fs.readFileSync(p, 'utf-8');
-        dir = path.parse(p).dir;
+    if (fs.existsSync(source) && fs.lstatSync(source).isFile()) {
+        html = fs.readFileSync(source, 'utf-8');
+        dir = path.parse(source).dir;
     }
     else {
-        html = p;
+        html = source;
         dir = (options === null || options === void 0 ? void 0 : options.dir) || process.cwd();
     }
     const document = parse(html, {
@@ -61,30 +57,52 @@ export const inlineHTML = (p, options) => __awaiter(void 0, void 0, void 0, func
             if (!fs.existsSync(filePath)) {
                 throw new Error(`File not found at: ${filePath}`);
             }
-            const output = sass.compile(filePath, {
-                charset: false,
-                loadPaths: config.loadPaths,
-            }).css;
-            node.replaceWith(`<style>\n${output}\n</style>`);
+            let source = fs.readFileSync(filePath, 'utf-8');
+            let output;
+            if (path.extname(filePath) === '.sass' || path.extname(filePath) === '.scss') {
+                source = sass(filePath, {
+                    charset: false,
+                    loadPaths: config.loadPaths || [],
+                }).css;
+            }
+            if (config.transformCss) {
+                const { code } = lightningcss({
+                    filename: filePath,
+                    code: Buffer.from(source),
+                    minify: config.minifyCss,
+                    targets: browserslistToTargets(browserslist(config.cssTarget || 'last 2 versions')),
+                });
+                output = code.toString();
+            }
+            else {
+                output = source;
+            }
+            node.replaceWith(`<style>\n${output.trim()}\n</style>`);
         }
         if (node.tagName === 'SCRIPT') {
             const filePath = path.resolve(dir, node.getAttribute('src') || '');
             if (!fs.existsSync(filePath)) {
                 throw new Error(`File not found at: ${filePath}`);
             }
-            const result = yield esbuild.build({
+            const buildOptions = {
                 entryPoints: [filePath],
                 format: 'iife',
                 bundle: true,
                 write: false,
-            });
+            };
+            if (config.minifyJs === true) {
+                buildOptions.minify = true;
+            }
+            else if (typeof config.minifyJs === 'object') {
+                const { identifiers, syntax, whitespace } = config.minifyJs;
+                buildOptions.minifyIdentifiers = identifiers;
+                buildOptions.minifySyntax = syntax;
+                buildOptions.minifyWhitespace = whitespace;
+            }
+            const result = yield esbuild.build(buildOptions);
             const output = result.outputFiles[0].text;
             node.replaceWith(`<script>\n${output}</script>`);
         }
     }
-    if (!config.format) {
-        return document.toString();
-    }
-    const formatted = prettier.format(document.toString(), Object.assign({ parser: 'html' }, config.format));
-    return formatted;
+    return document.toString();
 });

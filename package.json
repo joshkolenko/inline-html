@@ -4,7 +4,7 @@
     "inline",
     "html"
   ],
-  "version": "0.4.1",
+  "version": "1.0.0",
   "type": "module",
   "description": "Function that takes a path to an html file or an html string and replaces `script` and `link` elements that have the `inline` attribute with the corresponding file contents.",
   "repository": "https://github.com/joshkolenko/inline-html",
@@ -13,18 +13,21 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "rm -rf dist & tsc",
-    "pack": "npm run build && npm pack",
-    "example": "ts-node --esm example/index.ts"
+    "dev": "tsx watch example/index.ts",
+    "example": "tsx example/index.ts",
+    "test": "vitest"
   },
   "dependencies": {
-    "esbuild": "^0.16.16",
-    "node-html-parser": "^6.1.4",
-    "prettier": "^2.8.4",
-    "sass": "^1.63.4",
-    "typescript": "^5.2.2"
+    "browserslist": "^4.24.5",
+    "esbuild": "^0.25.3",
+    "lightningcss": "^1.29.3",
+    "node-html-parser": "^6.1.13",
+    "sass": "^1.87.0",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "@types/node": "^18.11.18",
-    "@types/prettier": "^2.7.2"
+    "@types/node": "^18.19.87",
+    "tsx": "^4.19.4",
+    "vitest": "^3.1.2"
   }
 }
