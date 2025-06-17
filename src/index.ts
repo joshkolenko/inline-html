@@ -120,6 +120,7 @@ export const inlineHTML = async (source: string, options?: Options) => {
         format: 'iife',
         bundle: true,
         write: false,
+        logLevel: 'silent',
       };
 
       if (config.minifyJs === true) {
