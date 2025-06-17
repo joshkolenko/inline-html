@@ -4,7 +4,7 @@
     "inline",
     "html"
   ],
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Function that takes a path to an html file or an html string and replaces `script` and `link` elements that have the `inline` attribute with the corresponding file contents.",
   "repository": {
